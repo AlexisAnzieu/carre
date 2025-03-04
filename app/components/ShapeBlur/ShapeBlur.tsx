@@ -139,6 +139,7 @@ interface ShapeBlurProps {
   borderSize?: number;
   circleSize?: number;
   circleEdge?: number;
+  children?: React.ReactNode;
 }
 
 const ShapeBlur: FC<ShapeBlurProps> = ({
@@ -150,6 +151,7 @@ const ShapeBlur: FC<ShapeBlurProps> = ({
   borderSize = 0.05,
   circleSize = 0.3,
   circleEdge = 0.5,
+  children,
 }) => {
   const mountRef = useRef<HTMLDivElement | null>(null);
 
@@ -265,7 +267,11 @@ const ShapeBlur: FC<ShapeBlurProps> = ({
     circleEdge,
   ]);
 
-  return <div ref={mountRef} className={`w-full h-full ${className}`} />;
+  return (
+    <div ref={mountRef} className={`w-full h-full ${className}`}>
+      {children}
+    </div>
+  );
 };
 
 export default ShapeBlur;
