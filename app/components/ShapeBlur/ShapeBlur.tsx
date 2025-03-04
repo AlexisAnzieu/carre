@@ -108,24 +108,29 @@ void main() {
         circleEdge
     );
 
-    float sdf;
+    vec3 backgroundColor = vec3(1.0); // White
+    vec3 borderColor = vec3(0.0); // Black
+    vec3 finalColor = backgroundColor;
+
     if (VAR == 0) {
-        sdf = sdRoundRect(st, vec2(size), roundness);
-        sdf = strokeAA(sdf, 0.0, borderSize, sdfCircle) * 4.0;
+        float rect = sdRoundRect(st, vec2(size), roundness);
+        float border = strokeAA(rect, 0.0, borderSize, sdfCircle);
+        finalColor = mix(backgroundColor, borderColor, border);
     } else if (VAR == 1) {
-        sdf = sdCircle(st, vec2(0.5));
-        sdf = fill(sdf, 0.6, sdfCircle) * 1.2;
+        float circle = sdCircle(st, vec2(0.5));
+        float filled = fill(circle, 0.6, sdfCircle);
+        finalColor = mix(backgroundColor, borderColor, filled);
     } else if (VAR == 2) {
-        sdf = sdCircle(st, vec2(0.5));
-        sdf = strokeAA(sdf, 0.58, 0.02, sdfCircle) * 4.0;
+        float circle = sdCircle(st, vec2(0.5));
+        float border = strokeAA(circle, 0.58, 0.02, sdfCircle);
+        finalColor = mix(backgroundColor, borderColor, border);
     } else if (VAR == 3) {
-        sdf = sdPoly(st - vec2(0.5, 0.45), 0.3, 3);
-        sdf = fill(sdf, 0.05, sdfCircle) * 1.4;
+        float poly = sdPoly(st - vec2(0.5, 0.45), 0.3, 3);
+        float filled = fill(poly, 0.05, sdfCircle);
+        finalColor = mix(backgroundColor, borderColor, filled);
     }
 
-    vec3 color = vec3(sdf);
-    float alpha = step(0.01, sdf);
-    gl_FragColor = vec4(color.rgb, alpha);
+    gl_FragColor = vec4(finalColor, 1.0);
 }
 `;
 
@@ -174,8 +179,8 @@ const ShapeBlur: FC<ShapeBlurProps> = ({
     const camera = new THREE.OrthographicCamera();
     camera.position.z = 1;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true });
-    renderer.setClearColor(0x000000, 0);
+    const renderer = new THREE.WebGLRenderer({ alpha: false });
+    renderer.setClearColor(0xffffff, 1);
     mount.appendChild(renderer.domElement);
 
     const geo = new THREE.PlaneGeometry(1, 1);
@@ -193,7 +198,7 @@ const ShapeBlur: FC<ShapeBlurProps> = ({
         u_circleEdge: { value: circleEdge },
       },
       defines: { VAR: variation },
-      transparent: true,
+      transparent: false,
     });
 
     const quad = new THREE.Mesh(geo, material);

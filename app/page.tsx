@@ -14,18 +14,18 @@ export default function Home() {
         borderSize={0.2}
         circleSize={0.4}
         circleEdge={0.6}
-        className="absolute"
+        className="absolute inset-0"
       >
         <Squares
           speed={0.6}
           squareSize={60}
           direction="down"
-          borderColor="#fff"
-          hoverFillColor="#222"
+          borderColor="#000"
+          hoverFillColor="#000"
           className="absolute inset-0"
         />
       </ShapeBlur>
-      <main className="flex items-center justify-center">
+      <main className="flex items-center justify-center ">
         <CircularText
           text="CARRE MUSIQUE "
           onHover="goBonkers"
