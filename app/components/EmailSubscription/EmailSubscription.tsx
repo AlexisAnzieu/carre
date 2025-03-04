@@ -26,11 +26,44 @@ const FloatingCircle = ({ delay = 0 }) => (
 
 const EmailSubscription = ({ isOpen, onClose }: EmailSubscriptionProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle email submission logic here
-    onClose();
+    setStatus("submitting");
+    setErrorMessage("");
+
+    try {
+      const response = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to subscribe");
+      }
+
+      setStatus("success");
+      setEmail("");
+      setTimeout(() => {
+        onClose();
+        setStatus("idle");
+      }, 2000);
+    } catch (error) {
+      setStatus("error");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to subscribe"
+      );
+    }
   };
 
   return (
@@ -81,23 +114,48 @@ const EmailSubscription = ({ isOpen, onClose }: EmailSubscriptionProps) => {
             >
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Entre ton e-mail"
                 className="w-full p-4 bg-white/5 border-2 border-white/30 rounded-xl 
                          text-white placeholder-white/50 focus:outline-none focus:border-white/60
                          transition-all duration-300 backdrop-blur-sm"
                 required
+                disabled={status === "submitting"}
               />
             </motion.div>
+
+            {status === "error" && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-red-400 text-sm text-center"
+              >
+                {errorMessage}
+              </motion.p>
+            )}
+
+            {status === "success" && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-green-400 text-sm text-center"
+              >
+                Merci de ton inscription !
+              </motion.p>
+            )}
 
             <motion.button
               type="submit"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
+              disabled={status === "submitting"}
               className="w-full bg-gradient-to-r from-white/20 to-white/10 border-2 
                        border-white/30 text-white py-4 rounded-xl hover:from-white/30 
-                       hover:to-white/20 transition-all duration-300 font-medium tracking-wide"
+                       hover:to-white/20 transition-all duration-300 font-medium tracking-wide
+                       disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {"Rejoindre"}
+              {status === "submitting" ? "En cours..." : "Rejoindre"}
             </motion.button>
           </form>
         </div>
