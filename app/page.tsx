@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import ShapeBlur from "./components/ShapeBlur/ShapeBlur";
 
 export default function Home() {
