@@ -6,6 +6,7 @@ interface CircularTextProps {
   spinDuration?: number;
   onHover?: "slowDown" | "speedUp" | "pause" | "goBonkers";
   className?: string;
+  onClick?: () => void;
 }
 
 const getRotationTransition = (
@@ -35,10 +36,16 @@ const CircularText: React.FC<CircularTextProps> = ({
   spinDuration = 20,
   onHover = "speedUp",
   className = "",
+  onClick,
 }) => {
   const letters = Array.from(text);
   const controls = useAnimation();
   const [currentRotation, setCurrentRotation] = useState(0);
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    }
+  };
 
   useEffect(() => {
     controls.start({
@@ -103,6 +110,7 @@ const CircularText: React.FC<CircularTextProps> = ({
       onUpdate={(latest) => setCurrentRotation(Number(latest.rotate))}
       onMouseEnter={handleHoverStart}
       onMouseLeave={handleHoverEnd}
+      onClick={handleClick}
     >
       {letters.map((letter, i) => {
         const rotation = (360 / letters.length) * i;
