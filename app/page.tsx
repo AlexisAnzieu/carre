@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import ShapeBlur from "./components/ShapeBlur/ShapeBlur";
 
 export default function Home() {
@@ -14,11 +15,10 @@ export default function Home() {
         circleSize={0.4}
         circleEdge={0.6}
       />
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <h1 className="text-5xl sm:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 animate-gradient-x tracking-tight">
+      <main className="flex flex-col gap-8 row-start-2 items-center">
+        <h1 className="text-5xl sm:text-7xl text-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 animate-gradient-x tracking-tight">
           Carré Musique
         </h1>
-        <div className="flex gap-4 items-center flex-col sm:flex-row"></div>
       </main>
     </div>
   );
