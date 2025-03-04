@@ -1,10 +1,11 @@
 "use client";
 
+import CircularText from "./components/CircularText/CircularText";
 import ShapeBlur from "./components/ShapeBlur/ShapeBlur";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] relative">
+    <div className="flex items-center justify-center min-h-screen p-8 font-[family-name:var(--font-geist-sans)] relative">
       <ShapeBlur
         className="absolute inset-0 -z-10"
         variation={0}
@@ -14,10 +15,12 @@ export default function Home() {
         circleSize={0.4}
         circleEdge={0.6}
       />
-      <main className="flex flex-col gap-8 row-start-2 items-center">
-        <h1 className="text-5xl sm:text-7xl text-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 animate-gradient-x tracking-tight">
-          Carré Musique
-        </h1>
+      <main className="flex items-center justify-center">
+        <CircularText
+          text="CARRE MUSIQUE "
+          onHover="goBonkers"
+          spinDuration={20}
+        />
       </main>
     </div>
   );
