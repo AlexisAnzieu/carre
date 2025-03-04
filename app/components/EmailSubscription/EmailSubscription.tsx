@@ -118,7 +118,7 @@ const EmailSubscription = ({ isOpen, onClose }: EmailSubscriptionProps) => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Entre ton e-mail"
                 className="w-full p-3 md:p-4 bg-black/5 backdrop-blur-sm border-2 border-white/30 rounded-xl 
-                         text-white placeholder-white/50 focus:outline-none focus:border-white/60
+                         text-black md:text-white placeholder-white/50 focus:outline-none focus:border-white/60
                          transition-all duration-300 text-sm md:text-base"
                 required
                 disabled={status === "submitting"}
