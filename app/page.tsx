@@ -7,18 +7,16 @@ import Squares from "./components/Squares/Squares";
 import EmailSubscription from "./components/EmailSubscription/EmailSubscription";
 
 export default function Home() {
-  const [variation, setVariation] = useState(0);
   const [showEmailModal, setShowEmailModal] = useState(false);
 
   const handleCircleClick = () => {
-    setVariation(1);
     setShowEmailModal(true);
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen p-8 font-[family-name:var(--font-geist-sans)] relative overflow-hidden">
       <ShapeBlur
-        variation={variation}
+        variation={0}
         shapeSize={1.5}
         roundness={0}
         borderSize={0.2}
@@ -56,7 +54,6 @@ export default function Home() {
             isOpen={showEmailModal}
             onClose={() => {
               setShowEmailModal(false);
-              setVariation(0);
             }}
           />
         )}

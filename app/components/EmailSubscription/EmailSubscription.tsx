@@ -79,10 +79,10 @@ const EmailSubscription = ({ isOpen, onClose }: EmailSubscriptionProps) => {
       }`}
     >
       <motion.div
-        className="relative backdrop-blur-md border border-white/30 p-4 sm:p-6 md:p-12 rounded-2xl w-full max-w-[90vw] sm:max-w-[500px] overflow-hidden"
+        className="relative backdrop-blur-md border border-black/30 p-4 sm:p-6 md:p-12 rounded-2xl w-full max-w-[90vw] sm:max-w-[500px] overflow-hidden"
         animate={{
           backgroundColor: isHovered
-            ? "rgba(255,255,255,0.1)"
+            ? "rgba(255,255,255,0.6)"
             : "rgba(255,255,255,0.05)",
         }}
         transition={{ duration: 0.3 }}
@@ -94,7 +94,7 @@ const EmailSubscription = ({ isOpen, onClose }: EmailSubscriptionProps) => {
 
         <div className="relative z-10">
           <motion.h2
-            className="text-white text-xl md:text-2xl font-bold mb-4 md:mb-6 text-center"
+            className="text-black text-xl md:text-2xl font-bold mb-4 md:mb-6 text-center"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -117,8 +117,8 @@ const EmailSubscription = ({ isOpen, onClose }: EmailSubscriptionProps) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Entre ton e-mail"
-                className="w-full p-3 md:p-4 bg-black/5 backdrop-blur-sm border-2 border-white/30 rounded-xl 
-                         text-black md:text-white placeholder-white/50 focus:outline-none focus:border-white/60
+                className="w-full p-3 md:p-4 bg-black/5 backdrop-blur-sm border-2 border-black/30 rounded-xl 
+                         text-black placeholder-black/50 focus:outline-none focus:border-black/60
                          transition-all duration-300 text-sm md:text-base"
                 required
                 disabled={status === "submitting"}
@@ -151,7 +151,7 @@ const EmailSubscription = ({ isOpen, onClose }: EmailSubscriptionProps) => {
               whileTap={{ scale: 0.98 }}
               disabled={status === "submitting"}
               className="w-full bg-gradient-to-r from-white/20 to-white/10 border-2 
-                       border-white/30 text-white py-3 md:py-4 rounded-xl hover:from-white/30 
+                       border-black/30 text-black py-3 md:py-4 rounded-xl hover:from-white/30 
                        hover:to-white/20 transition-all duration-300 font-medium tracking-wide
                        disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
             >
