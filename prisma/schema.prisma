@@ -16,3 +16,19 @@ model EmailSubscriber {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Expedition {
+  id            String         @id @default(cuid())
+  name          String
+  expeditioners Expeditioner[] @relation("ExpeditionToExpeditioner")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Expeditioner {
+  id          String       @id @default(cuid())
+  name        String
+  expeditions Expedition[] @relation("ExpeditionToExpeditioner")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
