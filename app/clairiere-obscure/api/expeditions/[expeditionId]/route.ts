@@ -65,9 +65,45 @@ export async function POST(
       );
     }
 
-    // Create expeditioner and connect to expedition
-    try {
-      const expeditioner = await prisma.expeditioner.create({
+    // Check if user already exists
+    let expeditioner = await prisma.expeditioner.findUnique({
+      where: {
+        name_birthday: {
+          name,
+          birthday: new Date(birthday),
+        },
+      },
+      include: {
+        expeditions: {
+          where: { id: expeditionId },
+        },
+      },
+    });
+
+    if (expeditioner) {
+      // User exists, check if already in this expedition
+      if (expeditioner.expeditions.length > 0) {
+        return NextResponse.json({
+          message: "Successfully joined expedition",
+          expeditioner,
+        });
+      }
+
+      // User exists but not in this expedition, connect them
+      expeditioner = await prisma.expeditioner.update({
+        where: { id: expeditioner.id },
+        data: {
+          expeditions: {
+            connect: { id: expeditionId },
+          },
+        },
+        include: {
+          expeditions: true,
+        },
+      });
+    } else {
+      // User doesn't exist, create new one
+      expeditioner = await prisma.expeditioner.create({
         data: {
           name,
           birthday: new Date(birthday),
@@ -75,27 +111,16 @@ export async function POST(
             connect: { id: expeditionId },
           },
         },
+        include: {
+          expeditions: true,
+        },
       });
-
-      return NextResponse.json({
-        message: "Successfully joined expedition",
-        expeditioner,
-      });
-    } catch (createError: unknown) {
-      // If unique constraint violation, try to find existing and connect
-      if (
-        createError &&
-        typeof createError === "object" &&
-        "code" in createError &&
-        createError.code === "P2002"
-      ) {
-        return NextResponse.json(
-          { error: "Someone with this name and birthday already exists" },
-          { status: 400 }
-        );
-      }
-      throw createError;
     }
+
+    return NextResponse.json({
+      message: "Successfully joined expedition",
+      expeditioner,
+    });
   } catch (error) {
     console.error(error);
     return NextResponse.json(
