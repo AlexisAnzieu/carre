@@ -55,7 +55,10 @@ export default function UserProfilePage() {
   }, [router]);
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("fr-FR", {
+    const date = new Date(dateString);
+    // Add 6 hours to account for server timezone difference
+    date.setHours(date.getHours() + 6);
+    return date.toLocaleDateString("fr-FR", {
       year: "numeric",
       month: "long",
       day: "numeric",
