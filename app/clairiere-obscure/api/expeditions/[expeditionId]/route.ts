@@ -65,24 +65,12 @@ export async function POST(
     // Validate expedition exists
     await validateExpeditionExists(expeditionId);
 
-    // Use upsert operation to handle both create and update in one transaction
-    const expeditioner = await prisma.expeditioner.upsert({
+    // Check if expeditioner already exists
+    const existingExpeditioner = await prisma.expeditioner.findUnique({
       where: {
         name_birthday: {
           name,
           birthday: birthdayDate,
-        },
-      },
-      create: {
-        name,
-        birthday: birthdayDate,
-        expeditions: {
-          connect: { id: expeditionId },
-        },
-      },
-      update: {
-        expeditions: {
-          connect: { id: expeditionId },
         },
       },
       include: {
@@ -94,6 +82,62 @@ export async function POST(
         },
       },
     });
+
+    let expeditioner;
+
+    if (existingExpeditioner) {
+      // Check if already connected to this expedition
+      const isAlreadyConnected = existingExpeditioner.expeditions.some(
+        (exp) => exp.id === expeditionId
+      );
+
+      if (isAlreadyConnected) {
+        // Already connected, return existing data
+        expeditioner = existingExpeditioner;
+      } else {
+        // Connect to new expedition while preserving existing ones
+        expeditioner = await prisma.expeditioner.update({
+          where: {
+            name_birthday: {
+              name,
+              birthday: birthdayDate,
+            },
+          },
+          data: {
+            expeditions: {
+              connect: { id: expeditionId },
+            },
+          },
+          include: {
+            expeditions: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        });
+      }
+    } else {
+      // Create new expeditioner
+      expeditioner = await prisma.expeditioner.create({
+        data: {
+          name,
+          birthday: birthdayDate,
+          expeditions: {
+            connect: { id: expeditionId },
+          },
+        },
+        include: {
+          expeditions: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      });
+    }
 
     const response: SuccessResponse = {
       message: "Successfully joined expedition",
@@ -127,13 +171,6 @@ export async function POST(
 
     // Handle specific Prisma errors
     if (error && typeof error === "object" && "code" in error) {
-      if (error.code === "P2002") {
-        return handleError(
-          error,
-          "Expeditioner already exists in this expedition",
-          409
-        );
-      }
       if (error.code === "P2025") {
         return handleError(error, "Expedition not found", 404);
       }

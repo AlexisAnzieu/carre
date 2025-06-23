@@ -30,17 +30,18 @@ export default function JoinPage({
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [alreadyJoined, setAlreadyJoined] = useState(false);
+  const [autoJoined, setAutoJoined] = useState(false);
 
   // Rediriger vers la page de profil quand l'utilisateur a rejoint ou déjà rejoint
   useEffect(() => {
     if (success || alreadyJoined) {
       const timer = setTimeout(() => {
         router.push("/clairiere-obscure/profile");
-      }, 2000); // Attendre 2 secondes pour laisser l'utilisateur voir le message de succès
+      }, success ? 2000 : autoJoined ? 1500 : 500); // Different timing based on action
 
       return () => clearTimeout(timer);
     }
-  }, [success, alreadyJoined, router]);
+  }, [success, alreadyJoined, autoJoined, router]);
 
   useEffect(() => {
     const checkUserAuth = async () => {
@@ -57,6 +58,37 @@ export default function JoinPage({
 
           if (isInExpedition) {
             setAlreadyJoined(true);
+          } else {
+            // User is authenticated but not in this expedition
+            // Automatically connect them to this expedition
+            try {
+              // Format birthday as YYYY-MM-DD string for API
+              const birthdayDate = new Date(userData.birthday);
+              const formattedBirthday = birthdayDate.toISOString().split('T')[0];
+              
+              const joinResponse = await fetch(
+                `/clairiere-obscure/api/expeditions/${expeditionId}`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ 
+                    name: userData.name, 
+                    birthday: formattedBirthday 
+                  }),
+                }
+              );
+
+              if (joinResponse.ok) {
+                setAutoJoined(true);
+                setAlreadyJoined(true);
+              } else {
+                console.log("Failed to auto-join expedition");
+              }
+            } catch (autoJoinError) {
+              console.log("Error auto-joining expedition:", autoJoinError);
+            }
           }
         }
       } catch {
@@ -286,7 +318,10 @@ export default function JoinPage({
                         }}
                       />
                       <p className="text-amber-100 font-serif text-sm sm:text-base tracking-wide">
-                        Redirection vers votre profil...
+                        {autoJoined 
+                          ? "Vous avez rejoint l'expédition ! Redirection..." 
+                          : "Redirection vers votre profil..."
+                        }
                       </p>
                       <div className="mt-3 w-24 h-px bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto" />
                     </div>
