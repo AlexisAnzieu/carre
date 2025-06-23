@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 type Expedition = {
   id: string;
@@ -11,8 +11,9 @@ type Expedition = {
 
 export default function AdminPage() {
   const [expeditions, setExpeditions] = useState<Expedition[]>([]);
-  const [newExpeditionName, setNewExpeditionName] = useState('');
+  const [newExpeditionName, setNewExpeditionName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -21,13 +22,13 @@ export default function AdminPage() {
 
   const fetchExpeditions = async () => {
     try {
-      const response = await fetch('/clairiere-obscure/api/expeditions');
+      const response = await fetch("/clairiere-obscure/api/expeditions");
       if (response.ok) {
         const data = await response.json();
         setExpeditions(data);
       }
     } catch (error) {
-      console.error('Failed to fetch expeditions:', error);
+      console.error("Failed to fetch expeditions:", error);
     }
   };
 
@@ -37,28 +38,50 @@ export default function AdminPage() {
 
     setIsLoading(true);
     try {
-      const response = await fetch('/clairiere-obscure/api/expeditions', {
-        method: 'POST',
+      const response = await fetch("/clairiere-obscure/api/expeditions", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ name: newExpeditionName }),
       });
 
       if (response.ok) {
-        setNewExpeditionName('');
+        setNewExpeditionName("");
         fetchExpeditions();
       }
     } catch (error) {
-      console.error('Failed to create expedition:', error);
+      console.error("Failed to create expedition:", error);
     }
     setIsLoading(false);
   };
 
+  const handleDeleteExpedition = async (id: string, name: string) => {
+    if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
+
+    setDeletingId(id);
+    try {
+      const response = await fetch("/clairiere-obscure/api/expeditions", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (response.ok) {
+        fetchExpeditions();
+      }
+    } catch (error) {
+      console.error("Failed to delete expedition:", error);
+    }
+    setDeletingId(null);
+  };
+
   const handleLogout = async () => {
     try {
-      const response = await fetch('/clairiere-obscure/api/auth/logout', {
-        method: 'POST',
+      const response = await fetch("/clairiere-obscure/api/auth/logout", {
+        method: "POST",
       });
 
       if (response.ok) {
@@ -100,7 +123,7 @@ export default function AdminPage() {
               disabled={isLoading}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:bg-blue-300"
             >
-              {isLoading ? 'Creating...' : 'Create Expedition'}
+              {isLoading ? "Creating..." : "Create Expedition"}
             </button>
           </form>
         </div>
@@ -116,9 +139,19 @@ export default function AdminPage() {
                 <div>
                   <h3 className="text-white font-medium">{expedition.name}</h3>
                   <p className="text-gray-400 text-sm">
-                    Created: {new Date(expedition.createdAt).toLocaleDateString()}
+                    Created:{" "}
+                    {new Date(expedition.createdAt).toLocaleDateString()}
                   </p>
                 </div>
+                <button
+                  onClick={() =>
+                    handleDeleteExpedition(expedition.id, expedition.name)
+                  }
+                  disabled={deletingId === expedition.id}
+                  className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors disabled:bg-red-300 text-sm"
+                >
+                  {deletingId === expedition.id ? "Deleting..." : "Delete"}
+                </button>
               </div>
             ))}
             {expeditions.length === 0 && (
