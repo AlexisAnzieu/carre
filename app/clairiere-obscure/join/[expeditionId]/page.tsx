@@ -10,23 +10,16 @@ interface Expedition {
   };
 }
 
-// Cookie utility functions
-const setCookie = (name: string, value: string, days: number = 30) => {
-  const expires = new Date();
-  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
-};
+interface UserExpedition {
+  id: string;
+  name: string;
+}
 
-const getCookie = (name: string): string | null => {
-  const nameEQ = name + "=";
-  const ca = document.cookie.split(";");
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) === " ") c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-  }
-  return null;
-};
+interface UserProfile {
+  id: string;
+  name: string;
+  expeditions: UserExpedition[];
+}
 
 export default function JoinPage({
   params,
@@ -42,16 +35,29 @@ export default function JoinPage({
   const [success, setSuccess] = useState(false);
   const [alreadyJoined, setAlreadyJoined] = useState(false);
   const [joinedMemberName, setJoinedMemberName] = useState<string | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    const checkExistingRegistration = async () => {
-      const { expeditionId } = await params;
-      const cookieKey = `expedition_${expeditionId}_joined`;
-      const existingRegistration = getCookie(cookieKey);
+    const checkUserAuth = async () => {
+      try {
+        const response = await fetch("/clairiere-obscure/api/user");
+        if (response.ok) {
+          const userData = await response.json();
+          setUserProfile(userData);
 
-      if (existingRegistration) {
-        setAlreadyJoined(true);
-        setJoinedMemberName(existingRegistration);
+          // Check if user is already in this expedition
+          const { expeditionId } = await params;
+          const isInExpedition = userData.expeditions.some(
+            (exp: UserExpedition) => exp.id === expeditionId
+          );
+
+          if (isInExpedition) {
+            setAlreadyJoined(true);
+            setJoinedMemberName(userData.name);
+          }
+        }
+      } catch {
+        console.log("No user session found");
       }
     };
 
@@ -75,7 +81,7 @@ export default function JoinPage({
       }
     };
 
-    checkExistingRegistration();
+    checkUserAuth();
     fetchExpedition();
   }, [params]);
 
@@ -109,9 +115,15 @@ export default function JoinPage({
         throw new Error(data.error || "Failed to join expedition");
       }
 
-      // Set cookie to remember this registration
-      const cookieKey = `expedition_${expeditionId}_joined`;
-      setCookie(cookieKey, name.trim(), 30); // Cookie expires in 30 days
+      // User is now logged in via cookie set by the API
+      // Refresh user profile to show they've joined
+      const userResponse = await fetch("/clairiere-obscure/api/user");
+      if (userResponse.ok) {
+        const userData = await userResponse.json();
+        setUserProfile(userData);
+        setAlreadyJoined(true);
+        setJoinedMemberName(userData.name);
+      }
 
       setSuccess(true);
       setName("");
@@ -231,6 +243,23 @@ export default function JoinPage({
                         </span>
                         .
                       </p>
+                      {userProfile && (
+                        <div className="mt-4">
+                          <a
+                            href="/clairiere-obscure/profile"
+                            className="inline-flex items-center px-4 py-2 bg-amber-700 hover:bg-amber-600 text-amber-100 rounded-lg transition-colors text-sm font-serif"
+                          >
+                            <svg
+                              className="w-4 h-4 mr-2"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                            </svg>
+                            Voir mon profil
+                          </a>
+                        </div>
+                      )}
                     </div>
                   ) : success ? (
                     <div className="bg-emerald-900/20 border border-emerald-700/40 rounded-lg p-4 sm:p-6 text-center">
@@ -250,6 +279,21 @@ export default function JoinPage({
                       <p className="text-emerald-300/80 font-serif text-xs sm:text-sm mt-2">
                         Votre aventure commence maintenant...
                       </p>
+                      <div className="mt-4">
+                        <a
+                          href="/clairiere-obscure/profile"
+                          className="inline-flex items-center px-4 py-2 bg-emerald-700 hover:bg-emerald-600 text-emerald-100 rounded-lg transition-colors text-sm font-serif"
+                        >
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                          </svg>
+                          Voir mon profil
+                        </a>
+                      </div>
                     </div>
                   ) : (
                     <form

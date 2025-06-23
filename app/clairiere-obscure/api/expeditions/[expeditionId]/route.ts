@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { Expeditioner, Expedition } from "@prisma/client";
-import { 
-  handleError, 
-  validateExpeditionExists, 
-  validateDate, 
+import {
+  handleError,
+  validateExpeditionExists,
+  validateDate,
   validateJoinExpeditionInput,
-  type APIError 
+  type APIError,
 } from "../utils";
 
 type ExpeditionerWithExpeditions = Expeditioner & {
-  expeditions: Pick<Expedition, 'id' | 'name'>[];
+  expeditions: Pick<Expedition, "id" | "name">[];
 };
 
 interface SuccessResponse {
@@ -24,7 +24,7 @@ export async function GET(
 ) {
   try {
     const { expeditionId } = await params;
-    
+
     const expedition = await prisma.expedition.findUnique({
       where: { id: expeditionId },
       include: {
@@ -37,10 +37,9 @@ export async function GET(
     });
 
     if (!expedition) {
-      return NextResponse.json(
-        { error: "Expedition not found" } as APIError,
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Expedition not found" } as APIError, {
+        status: 404,
+      });
     }
 
     return NextResponse.json(expedition);
@@ -56,7 +55,7 @@ export async function POST(
   try {
     const { expeditionId } = await params;
     const requestBody = await request.json();
-    
+
     // Validate and sanitize input
     const { name, birthday } = validateJoinExpeditionInput(requestBody);
 
@@ -101,11 +100,24 @@ export async function POST(
       expeditioner,
     };
 
-    return NextResponse.json(response);
+    // Set user ID cookie for session management
+    const cookieResponse = NextResponse.json(response);
+    cookieResponse.cookies.set("user-id", expeditioner.id, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 30 * 24 * 60 * 60, // 30 days
+      path: "/",
+    });
+
+    return cookieResponse;
   } catch (error) {
     // Handle validation errors
     if (error instanceof Error) {
-      if (error.message.includes("required") || error.message.includes("Invalid")) {
+      if (
+        error.message.includes("required") ||
+        error.message.includes("Invalid")
+      ) {
         return handleError(error, error.message, 400);
       }
       if (error.message === "Expedition not found") {
@@ -114,15 +126,19 @@ export async function POST(
     }
 
     // Handle specific Prisma errors
-    if (error && typeof error === 'object' && 'code' in error) {
-      if (error.code === 'P2002') {
-        return handleError(error, "Expeditioner already exists in this expedition", 409);
+    if (error && typeof error === "object" && "code" in error) {
+      if (error.code === "P2002") {
+        return handleError(
+          error,
+          "Expeditioner already exists in this expedition",
+          409
+        );
       }
-      if (error.code === 'P2025') {
+      if (error.code === "P2025") {
         return handleError(error, "Expedition not found", 404);
       }
     }
-    
+
     return handleError(error, "Failed to join expedition");
   }
 }
