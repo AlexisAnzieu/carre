@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface Expedition {
   id: string;
@@ -15,17 +16,12 @@ interface UserExpedition {
   name: string;
 }
 
-interface UserProfile {
-  id: string;
-  name: string;
-  expeditions: UserExpedition[];
-}
-
 export default function JoinPage({
   params,
 }: {
   params: Promise<{ expeditionId: string }>;
 }) {
+  const router = useRouter();
   const [expedition, setExpedition] = useState<Expedition | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,8 +30,17 @@ export default function JoinPage({
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [alreadyJoined, setAlreadyJoined] = useState(false);
-  const [joinedMemberName, setJoinedMemberName] = useState<string | null>(null);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+
+  // Redirect to profile page when user has joined or already joined
+  useEffect(() => {
+    if (success || alreadyJoined) {
+      const timer = setTimeout(() => {
+        router.push("/clairiere-obscure/profile");
+      }, 2000); // Wait 2 seconds to let user see the success message
+
+      return () => clearTimeout(timer);
+    }
+  }, [success, alreadyJoined, router]);
 
   useEffect(() => {
     const checkUserAuth = async () => {
@@ -43,7 +48,6 @@ export default function JoinPage({
         const response = await fetch("/clairiere-obscure/api/user");
         if (response.ok) {
           const userData = await response.json();
-          setUserProfile(userData);
 
           // Check if user is already in this expedition
           const { expeditionId } = await params;
@@ -53,7 +57,6 @@ export default function JoinPage({
 
           if (isInExpedition) {
             setAlreadyJoined(true);
-            setJoinedMemberName(userData.name);
           }
         }
       } catch {
@@ -119,10 +122,7 @@ export default function JoinPage({
       // Refresh user profile to show they've joined
       const userResponse = await fetch("/clairiere-obscure/api/user");
       if (userResponse.ok) {
-        const userData = await userResponse.json();
-        setUserProfile(userData);
         setAlreadyJoined(true);
-        setJoinedMemberName(userData.name);
       }
 
       setSuccess(true);
@@ -225,75 +225,12 @@ export default function JoinPage({
                     </p>
                   </div>
 
-                  {alreadyJoined && !success ? (
-                    <div className="bg-amber-900/20 border border-amber-700/40 rounded-lg p-4 sm:p-6 text-center">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-amber-500 to-amber-700 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                        <svg
-                          className="w-5 h-5 sm:w-6 sm:h-6 text-white"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                        </svg>
-                      </div>
-                      <p className="text-amber-200 font-serif leading-relaxed text-sm sm:text-base px-2">
-                        Vous faites déjà partie de cette expédition en tant que{" "}
-                        <span className="font-bold text-amber-100">
-                          {joinedMemberName}
-                        </span>
-                        .
+                  {alreadyJoined || success ? (
+                    <div className="text-center py-4">
+                      <div className="inline-block w-6 h-6 sm:w-8 sm:h-8 border-2 border-amber-600 border-t-transparent rounded-full animate-spin mb-3 sm:mb-4" />
+                      <p className="text-amber-100 font-serif text-sm sm:text-base">
+                        Redirection vers votre profil...
                       </p>
-                      {userProfile && (
-                        <div className="mt-4">
-                          <a
-                            href="/clairiere-obscure/profile"
-                            className="inline-flex items-center px-4 py-2 bg-amber-700 hover:bg-amber-600 text-amber-100 rounded-lg transition-colors text-sm font-serif"
-                          >
-                            <svg
-                              className="w-4 h-4 mr-2"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                            </svg>
-                            Voir mon profil
-                          </a>
-                        </div>
-                      )}
-                    </div>
-                  ) : success ? (
-                    <div className="bg-emerald-900/20 border border-emerald-700/40 rounded-lg p-4 sm:p-6 text-center">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                        <svg
-                          className="w-5 h-5 sm:w-6 sm:h-6 text-white"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M12 2L13.09 8.26L19 9L13.09 9.74L12 16L10.91 9.74L5 9L10.91 8.26L12 2Z" />
-                        </svg>
-                      </div>
-                      <p className="text-emerald-200 font-serif text-base sm:text-lg leading-relaxed px-2">
-                        Félicitations ! Vous avez rejoint l&apos;expédition avec
-                        succès.
-                      </p>
-                      <p className="text-emerald-300/80 font-serif text-xs sm:text-sm mt-2">
-                        Votre aventure commence maintenant...
-                      </p>
-                      <div className="mt-4">
-                        <a
-                          href="/clairiere-obscure/profile"
-                          className="inline-flex items-center px-4 py-2 bg-emerald-700 hover:bg-emerald-600 text-emerald-100 rounded-lg transition-colors text-sm font-serif"
-                        >
-                          <svg
-                            className="w-4 h-4 mr-2"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                          </svg>
-                          Voir mon profil
-                        </a>
-                      </div>
                     </div>
                   ) : (
                     <form

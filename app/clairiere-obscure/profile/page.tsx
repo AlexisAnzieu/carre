@@ -54,20 +54,6 @@ export default function UserProfilePage() {
     fetchUserProfile();
   }, [router]);
 
-  const handleLogout = async () => {
-    try {
-      const response = await fetch("/clairiere-obscure/api/user", {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        router.push("/clairiere-obscure");
-      }
-    } catch (err) {
-      console.error("Logout failed:", err);
-    }
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -111,17 +97,6 @@ export default function UserProfilePage() {
   return (
     <div className="min-h-screen bg-black text-white p-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">User Profile</h1>
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors"
-          >
-            Logout
-          </button>
-        </div>
-
         {/* User Info */}
         <div className="bg-gray-900 rounded-lg p-6 mb-8">
           <h2 className="text-2xl font-semibold mb-4">Personal Information</h2>
@@ -172,32 +147,10 @@ export default function UserProfilePage() {
                       </div>
                     </div>
                   </div>
-
-                  {/* Quick action to view expedition */}
-                  <div className="mt-3">
-                    <button
-                      onClick={() =>
-                        router.push(`/clairiere-obscure/join/${expedition.id}`)
-                      }
-                      className="text-blue-400 hover:text-blue-300 text-sm underline"
-                    >
-                      View Expedition Details
-                    </button>
-                  </div>
                 </div>
               ))}
             </div>
           )}
-        </div>
-
-        {/* Navigation */}
-        <div className="mt-8 text-center">
-          <button
-            onClick={() => router.push("/clairiere-obscure")}
-            className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg transition-colors"
-          >
-            Back to Home
-          </button>
         </div>
       </div>
     </div>
