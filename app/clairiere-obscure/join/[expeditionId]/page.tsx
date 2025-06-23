@@ -146,56 +146,74 @@ export default function JoinPage({
       className="min-h-screen relative overflow-hidden"
       style={{
         background:
-          "linear-gradient(135deg, #0a0a0a 0%, #1a0f1a 25%, #2a1829 50%, #1a0f1a 75%, #0a0a0a 100%)",
+          "linear-gradient(39deg, #2a2028 0%, #3a2f3a 25%, #4a3849 50%, #3a2f3a 75%, #2a2028 80%)",
       }}
     >
       {/* Éléments atmosphériques de fond inspirés de Clair Obscur */}
       <div className="absolute inset-0">
-        {/* Motif orné Belle Époque */}
-        <div
-          className="absolute inset-0 opacity-10"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.15'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20S-10 18.954-10 30s8.954 20 20 20 20-8.954 20-20zm-20-15c8.284 0 15 6.716 15 15s-6.716 15-15 15-15-6.716-15-15 6.716-15 15-15z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }}
-        />
-
-        {/* Particules flottantes dorées - effet chiaroscuro */}
-        <div className="absolute inset-0">
-          {[...Array(18)].map((_, i) => (
+        {/* Flying petals background */}
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(175)].map((_, i) => (
             <div
               key={i}
-              className="absolute rounded-full opacity-30 animate-pulse"
+              className="absolute opacity-90 animate-pulse"
               style={{
-                background:
-                  "radial-gradient(circle, #d4af37 0%, #b8860b 50%, transparent 70%)",
-                width: Math.random() * 3 + 2 + "px",
-                height: Math.random() * 3 + 2 + "px",
                 left: Math.random() * 100 + "%",
                 top: Math.random() * 100 + "%",
-                animationDelay: Math.random() * 6 + "s",
-                animationDuration: Math.random() * 4 + 3 + "s",
-                boxShadow: "0 0 10px rgba(212, 175, 55, 0.4)",
+                animationDelay: Math.random() * 8 + "s",
+                animationDuration: Math.random() * 12 + 8 + "s",
               }}
-            />
+            >
+              <div
+                className="transform rotate-45 rounded-full"
+                style={{
+                  width: Math.random() * 6 + 3 + "px",
+                  height: Math.random() * 10 + 5 + "px",
+                  background: `linear-gradient(135deg, 
+                    rgba(236, 72, 153, ${Math.random() * 0.6 + 0.4}) 0%, 
+                    rgba(190, 18, 60, ${Math.random() * 0.7 + 0.3}) 50%, 
+                    rgba(244, 63, 94, ${Math.random() * 0.5 + 0.3}) 100%)`,
+                  boxShadow: `0 0 ${
+                    Math.random() * 12 + 6
+                  }px rgba(236, 72, 153, 0.7)`,
+                  animation: `floatUp ${
+                    Math.random() * 18 + 12
+                  }s infinite linear`,
+                  transform: `rotate(${Math.random() * 360}deg) scale(${
+                    Math.random() * 0.7 + 0.5
+                  })`,
+                }}
+              />
+            </div>
           ))}
         </div>
 
-        {/* Lignes de lumière mystiques */}
-        <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent transform -skew-y-12" />
-          <div className="absolute bottom-1/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-600/20 to-transparent transform skew-y-6" />
-        </div>
+        {/* CSS animations for petals */}
+        <style jsx>{`
+          @keyframes floatUp {
+            0% {
+              transform: translateY(100vh) translateX(0px) rotate(0deg);
+              opacity: 0;
+            }
+            10% {
+              opacity: 0.8;
+            }
+            90% {
+              opacity: 0.8;
+            }
+            100% {
+              transform: translateY(-15vh)
+                translateX(${Math.random() * 150 - 75}px) rotate(360deg);
+              opacity: 0;
+            }
+          }
+        `}</style>
       </div>
 
       <div className="relative z-10 min-h-screen flex items-center justify-center p-3 sm:p-4 md:p-6">
         <div className="relative w-full max-w-sm sm:max-w-md">
-          {/* Cadre orné Belle Époque inspiré de Clair Obscur */}
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-900/20 via-transparent to-amber-900/20 rounded-xl transform rotate-1 shadow-2xl shadow-amber-900/10" />
-          <div className="absolute inset-0 bg-gradient-to-tl from-amber-800/15 via-transparent to-amber-800/15 rounded-xl transform -rotate-1" />
-          <div className="absolute inset-0 border border-amber-600/30 rounded-xl" />
-
           {/* Conteneur de contenu principal */}
-          <div className="relative bg-gradient-to-br from-gray-900/98 via-gray-800/98 to-gray-900/98 backdrop-blur-md border-2 border-amber-900/40 rounded-xl shadow-2xl overflow-hidden">
+          <div className="relative bg-gradient-to-br from-gray-900/98 via-gray-800/98 to-gray-900/98 border-2 border-amber-900/40 rounded-xl shadow-2xl overflow-hidden">
             {/* Bordure décorative supérieure */}
             <div className="h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
 
