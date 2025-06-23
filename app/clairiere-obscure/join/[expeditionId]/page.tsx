@@ -217,13 +217,6 @@ export default function JoinPage({
             {/* Bordure décorative supérieure */}
             <div className="h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
 
-            {/* Motif décoratif Belle Époque en header */}
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-700 rounded-full border-4 border-gray-900 flex items-center justify-center">
-                <div className="w-2 h-2 bg-amber-100 rounded-full" />
-              </div>
-            </div>
-
             <div className="p-4 sm:p-6 md:p-8 pt-6 sm:pt-8">
               {loading ? (
                 <div className="text-center py-6">
