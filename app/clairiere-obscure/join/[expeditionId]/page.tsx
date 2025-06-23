@@ -31,12 +31,12 @@ export default function JoinPage({
   const [success, setSuccess] = useState(false);
   const [alreadyJoined, setAlreadyJoined] = useState(false);
 
-  // Redirect to profile page when user has joined or already joined
+  // Rediriger vers la page de profil quand l'utilisateur a rejoint ou déjà rejoint
   useEffect(() => {
     if (success || alreadyJoined) {
       const timer = setTimeout(() => {
         router.push("/clairiere-obscure/profile");
-      }, 2000); // Wait 2 seconds to let user see the success message
+      }, 2000); // Attendre 2 secondes pour laisser l'utilisateur voir le message de succès
 
       return () => clearTimeout(timer);
     }
@@ -60,7 +60,7 @@ export default function JoinPage({
           }
         }
       } catch {
-        console.log("No user session found");
+        console.log("Aucune session utilisateur trouvée");
       }
     };
 
@@ -73,12 +73,16 @@ export default function JoinPage({
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || "Failed to fetch expedition");
+          throw new Error(
+            data.error || "Échec de la récupération de l'expédition"
+          );
         }
 
         setExpedition(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
+        setError(
+          err instanceof Error ? err.message : "Une erreur s'est produite"
+        );
       } finally {
         setLoading(false);
       }
@@ -92,7 +96,7 @@ export default function JoinPage({
     e.preventDefault();
 
     if (!name.trim() || !birthday) {
-      setError("Please fill in all fields");
+      setError("Veuillez remplir tous les champs");
       return;
     }
 
@@ -115,11 +119,11 @@ export default function JoinPage({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to join expedition");
+        throw new Error(data.error || "Échec de rejoindre l'expédition");
       }
 
-      // User is now logged in via cookie set by the API
-      // Refresh user profile to show they've joined
+      // L'utilisateur est maintenant connecté via cookie défini par l'API
+      // Actualiser le profil utilisateur pour montrer qu'il a rejoint
       const userResponse = await fetch("/clairiere-obscure/api/user");
       if (userResponse.ok) {
         setAlreadyJoined(true);
@@ -129,7 +133,9 @@ export default function JoinPage({
       setName("");
       setBirthday("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(
+        err instanceof Error ? err.message : "Une erreur s'est produite"
+      );
     } finally {
       setSubmitting(false);
     }
@@ -140,109 +146,153 @@ export default function JoinPage({
       className="min-h-screen relative overflow-hidden"
       style={{
         background:
-          "linear-gradient(135deg, #0a0a0a 0%, #1a0f1a 25%, #0f1419 50%, #1a0f1a 75%, #0a0a0a 100%)",
+          "linear-gradient(135deg, #0a0a0a 0%, #1a0f1a 25%, #2a1829 50%, #1a0f1a 75%, #0a0a0a 100%)",
       }}
     >
-      {/* Atmospheric background elements */}
+      {/* Éléments atmosphériques de fond inspirés de Clair Obscur */}
       <div className="absolute inset-0">
-        {/* Ornate pattern overlay */}
+        {/* Motif orné Belle Époque */}
         <div
-          className="absolute inset-0 opacity-5"
+          className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.1'%3E%3Cpath d='M20 20c0-7.364-5.636-13.333-12.667-13.333S-5.333 12.636-5.333 20s5.636 13.333 12.667 13.333S20 27.364 20 20zm-12.667-10c5.523 0 10 4.477 10 10s-4.477 10-10 10-10-4.477-10-10 4.477-10 10-10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4af37' fill-opacity='0.15'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20S-10 18.954-10 30s8.954 20 20 20 20-8.954 20-20zm-20-15c8.284 0 15 6.716 15 15s-6.716 15-15 15-15-6.716-15-15 6.716-15 15-15z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}
         />
 
-        {/* Floating particles - fewer on mobile */}
+        {/* Particules flottantes dorées - effet chiaroscuro */}
         <div className="absolute inset-0">
-          {[...Array(12)].map((_, i) => (
+          {[...Array(18)].map((_, i) => (
             <div
               key={i}
-              className="absolute rounded-full opacity-20 animate-pulse"
+              className="absolute rounded-full opacity-30 animate-pulse"
               style={{
                 background:
-                  "radial-gradient(circle, #d4af37 0%, transparent 70%)",
-                width: Math.random() * 2 + 1 + "px",
-                height: Math.random() * 2 + 1 + "px",
+                  "radial-gradient(circle, #d4af37 0%, #b8860b 50%, transparent 70%)",
+                width: Math.random() * 3 + 2 + "px",
+                height: Math.random() * 3 + 2 + "px",
                 left: Math.random() * 100 + "%",
                 top: Math.random() * 100 + "%",
-                animationDelay: Math.random() * 4 + "s",
-                animationDuration: Math.random() * 3 + 2 + "s",
+                animationDelay: Math.random() * 6 + "s",
+                animationDuration: Math.random() * 4 + 3 + "s",
+                boxShadow: "0 0 10px rgba(212, 175, 55, 0.4)",
               }}
             />
           ))}
+        </div>
+
+        {/* Lignes de lumière mystiques */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent transform -skew-y-12" />
+          <div className="absolute bottom-1/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-600/20 to-transparent transform skew-y-6" />
         </div>
       </div>
 
       <div className="relative z-10 min-h-screen flex items-center justify-center p-3 sm:p-4 md:p-6">
         <div className="relative w-full max-w-sm sm:max-w-md">
-          {/* Ornate border frame - subtle on mobile */}
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-900/10 via-transparent to-amber-900/10 sm:from-amber-900/20 sm:to-amber-900/20 rounded-lg transform rotate-1" />
-          <div className="absolute inset-0 bg-gradient-to-tl from-amber-800/5 via-transparent to-amber-800/5 sm:from-amber-800/10 sm:to-amber-800/10 rounded-lg transform -rotate-1" />
+          {/* Cadre orné Belle Époque inspiré de Clair Obscur */}
+          <div className="absolute inset-0 bg-gradient-to-br from-amber-900/20 via-transparent to-amber-900/20 rounded-xl transform rotate-1 shadow-2xl shadow-amber-900/10" />
+          <div className="absolute inset-0 bg-gradient-to-tl from-amber-800/15 via-transparent to-amber-800/15 rounded-xl transform -rotate-1" />
+          <div className="absolute inset-0 border border-amber-600/30 rounded-xl" />
 
-          {/* Main content container */}
-          <div className="relative bg-gradient-to-br from-gray-900/95 via-gray-800/95 to-gray-900/95 backdrop-blur-sm border border-amber-900/20 sm:border-2 sm:border-amber-900/30 rounded-lg shadow-2xl overflow-hidden">
-            {/* Top decorative border */}
-            <div className="h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-amber-600 to-transparent" />
+          {/* Conteneur de contenu principal */}
+          <div className="relative bg-gradient-to-br from-gray-900/98 via-gray-800/98 to-gray-900/98 backdrop-blur-md border-2 border-amber-900/40 rounded-xl shadow-2xl overflow-hidden">
+            {/* Bordure décorative supérieure */}
+            <div className="h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
 
-            <div className="p-4 sm:p-6 md:p-8">
+            {/* Motif décoratif Belle Époque en header */}
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-700 rounded-full border-4 border-gray-900 flex items-center justify-center">
+                <div className="w-2 h-2 bg-amber-100 rounded-full" />
+              </div>
+            </div>
+
+            <div className="p-4 sm:p-6 md:p-8 pt-6 sm:pt-8">
               {loading ? (
-                <div className="text-center py-4">
-                  <div className="inline-block w-6 h-6 sm:w-8 sm:h-8 border-2 border-amber-600 border-t-transparent rounded-full animate-spin mb-3 sm:mb-4" />
-                  <p className="text-amber-100 font-serif text-sm sm:text-base">
+                <div className="text-center py-6">
+                  <div
+                    className="inline-block w-8 h-8 sm:w-10 sm:h-10 border-3 border-amber-500 border-t-transparent rounded-full animate-spin mb-4"
+                    style={{ boxShadow: "0 0 15px rgba(212, 175, 55, 0.3)" }}
+                  />
+                  <p className="text-amber-100 font-serif text-sm sm:text-base tracking-wide">
                     Chargement de l&apos;expédition...
                   </p>
+                  <div className="mt-2 w-24 h-px bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto" />
                 </div>
               ) : error ? (
-                <div className="text-center py-4">
-                  <div className="bg-red-900/30 border border-red-700/50 rounded-lg p-3 sm:p-4 mb-4">
-                    <div className="text-red-400 font-serif text-xs sm:text-sm">
+                <div className="text-center py-6">
+                  <div className="bg-red-900/40 border-2 border-red-700/60 rounded-xl p-4 mb-4 backdrop-blur-sm">
+                    <div className="text-red-300 font-serif text-xs sm:text-sm tracking-wide">
                       {error}
                     </div>
                   </div>
                 </div>
               ) : expedition ? (
                 <>
-                  {/* Header with ornate styling */}
-                  <div className="text-center mb-6 sm:mb-8">
-                    <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-amber-600 to-amber-800 rounded-full mb-3 sm:mb-4 shadow-lg">
+                  {/* En-tête avec style orné Belle Époque */}
+                  <div className="text-center mb-8 sm:mb-10">
+                    <div
+                      className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-amber-500 via-amber-600 to-amber-800 rounded-full mb-4 sm:mb-6 shadow-xl relative"
+                      style={{
+                        boxShadow:
+                          "0 0 30px rgba(212, 175, 55, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.1)",
+                      }}
+                    >
                       <svg
-                        className="w-6 h-6 sm:w-8 sm:h-8 text-amber-100"
+                        className="w-8 h-8 sm:w-10 sm:h-10 text-amber-50"
                         fill="currentColor"
                         viewBox="0 0 24 24"
                       >
                         <path d="M12 2L13.09 8.26L19 9L13.09 9.74L12 16L10.91 9.74L5 9L10.91 8.26L12 2Z" />
                       </svg>
+                      {/* Effet de brillance */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-full" />
                     </div>
-                    <h1 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold mb-2 text-amber-100 tracking-wide px-2">
+                    <h1
+                      className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold mb-3 text-amber-50 tracking-wider px-2"
+                      style={{ textShadow: "0 0 20px rgba(212, 175, 55, 0.5)" }}
+                    >
                       {expedition.name}
                     </h1>
-                    <div className="w-16 sm:w-24 h-px bg-gradient-to-r from-transparent via-amber-600 to-transparent mx-auto mb-2 sm:mb-3" />
-                    <p className="text-amber-200/80 font-serif text-xs sm:text-sm tracking-wider">
-                      {expedition._count.expeditioners} explorateur
-                      {expedition._count.expeditioners !== 1 ? "s" : ""} inscrit
+                    <div className="w-32 sm:w-40 h-px bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto mb-3" />
+                    <div className="flex items-center justify-center space-x-2 mb-2">
+                      <div className="w-2 h-2 bg-amber-400 rounded-full" />
+                      <div className="w-1 h-1 bg-amber-500 rounded-full" />
+                      <div className="w-2 h-2 bg-amber-400 rounded-full" />
+                    </div>
+                    <p className="text-amber-200/90 font-serif text-sm sm:text-base tracking-widest">
+                      {expedition._count.expeditioners} Explorateur
+                      {expedition._count.expeditioners !== 1 ? "s" : ""} Inscrit
                       {expedition._count.expeditioners !== 1 ? "s" : ""}
                     </p>
                   </div>
 
                   {alreadyJoined || success ? (
-                    <div className="text-center py-4">
-                      <div className="inline-block w-6 h-6 sm:w-8 sm:h-8 border-2 border-amber-600 border-t-transparent rounded-full animate-spin mb-3 sm:mb-4" />
-                      <p className="text-amber-100 font-serif text-sm sm:text-base">
+                    <div className="text-center py-6">
+                      <div
+                        className="inline-block w-8 h-8 sm:w-10 sm:h-10 border-3 border-amber-500 border-t-transparent rounded-full animate-spin mb-4"
+                        style={{
+                          boxShadow: "0 0 15px rgba(212, 175, 55, 0.4)",
+                        }}
+                      />
+                      <p className="text-amber-100 font-serif text-sm sm:text-base tracking-wide">
                         Redirection vers votre profil...
                       </p>
+                      <div className="mt-3 w-24 h-px bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto" />
                     </div>
                   ) : (
                     <form
                       onSubmit={handleSubmit}
-                      className="space-y-5 sm:space-y-6"
+                      className="space-y-6 sm:space-y-8"
                     >
                       <div>
                         <label
                           htmlFor="name"
-                          className="block text-xs sm:text-sm font-serif font-medium text-amber-200 mb-2 sm:mb-3 tracking-wide"
+                          className="block text-sm sm:text-base font-serif font-medium text-amber-200 mb-3 tracking-widest uppercase"
+                          style={{
+                            textShadow: "0 0 10px rgba(212, 175, 55, 0.3)",
+                          }}
                         >
-                          Nom de l&apos;Explorateur
+                          Nom de l&apos;Expéditionnaire
                         </label>
                         <div className="relative">
                           <input
@@ -250,18 +300,27 @@ export default function JoinPage({
                             id="name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-gray-800/50 border border-amber-900/20 sm:border-2 sm:border-amber-900/30 rounded-lg text-amber-100 placeholder-amber-300/50 font-serif focus:outline-none focus:border-amber-600/50 focus:bg-gray-800/70 transition-all duration-300 backdrop-blur-sm text-sm sm:text-base"
-                            placeholder="Inscrivez votre nom dans les annales..."
+                            className="w-full px-4 py-3 sm:px-5 sm:py-4 bg-gray-800/60 border-2 border-amber-900/40 rounded-xl text-amber-50 placeholder-amber-300/60 font-serif focus:outline-none focus:border-amber-500/70 focus:bg-gray-800/80 transition-all duration-500 backdrop-blur-md text-sm sm:text-base"
+                            style={{
+                              boxShadow:
+                                "inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(212, 175, 55, 0.1)",
+                            }}
+                            placeholder="Inscrivez votre nom dans les chroniques..."
                             required
                           />
-                          <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-amber-600/5 to-transparent pointer-events-none" />
+                          <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-amber-500/10 to-transparent pointer-events-none" />
+                          {/* Effet de brillance au focus */}
+                          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-400/50 to-transparent" />
                         </div>
                       </div>
 
                       <div>
                         <label
                           htmlFor="birthday"
-                          className="block text-xs sm:text-sm font-serif font-medium text-amber-200 mb-2 sm:mb-3 tracking-wide"
+                          className="block text-sm sm:text-base font-serif font-medium text-amber-200 mb-3 tracking-widest uppercase"
+                          style={{
+                            textShadow: "0 0 10px rgba(212, 175, 55, 0.3)",
+                          }}
                         >
                           Date de Naissance
                         </label>
@@ -271,24 +330,36 @@ export default function JoinPage({
                             id="birthday"
                             value={birthday}
                             onChange={(e) => setBirthday(e.target.value)}
-                            className="w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-gray-800/50 border border-amber-900/20 sm:border-2 sm:border-amber-900/30 rounded-lg text-amber-100 font-serif focus:outline-none focus:border-amber-600/50 focus:bg-gray-800/70 transition-all duration-300 backdrop-blur-sm text-sm sm:text-base"
+                            className="w-full px-4 py-3 sm:px-5 sm:py-4 bg-gray-800/60 border-2 border-amber-900/40 rounded-xl text-amber-50 font-serif focus:outline-none focus:border-amber-500/70 focus:bg-gray-800/80 transition-all duration-500 backdrop-blur-md text-sm sm:text-base"
+                            style={{
+                              boxShadow:
+                                "inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(212, 175, 55, 0.1)",
+                            }}
                             required
                           />
-                          <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-amber-600/5 to-transparent pointer-events-none" />
+                          <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-amber-500/10 to-transparent pointer-events-none" />
+                          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-400/50 to-transparent" />
                         </div>
                       </div>
 
                       <button
                         type="submit"
                         disabled={submitting}
-                        className="w-full relative overflow-hidden bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 hover:from-amber-600 hover:via-amber-500 hover:to-amber-600 disabled:from-gray-700 disabled:via-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-serif font-bold py-3 px-4 sm:py-4 sm:px-6 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl hover:shadow-amber-900/20 group text-sm sm:text-base"
+                        className="w-full relative overflow-hidden bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 hover:from-amber-600 hover:via-amber-500 hover:to-amber-600 disabled:from-gray-700 disabled:via-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed text-white font-serif font-bold py-4 px-6 sm:py-5 sm:px-8 rounded-xl transition-all duration-500 transform hover:scale-[1.02] hover:shadow-2xl group text-sm sm:text-base border-2 border-amber-500/30"
+                        style={{
+                          boxShadow:
+                            "0 0 30px rgba(212, 175, 55, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.1)",
+                          textShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+                        }}
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                        <span className="relative tracking-wide">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                        <span className="relative tracking-widest uppercase">
                           {submitting
                             ? "Inscription en cours..."
                             : "Rejoindre l'Expédition"}
                         </span>
+                        {/* Effet de brillance permanente */}
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-300/50 to-transparent" />
                       </button>
                     </form>
                   )}
@@ -296,8 +367,14 @@ export default function JoinPage({
               ) : null}
             </div>
 
-            {/* Bottom decorative border */}
-            <div className="h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-amber-600 to-transparent" />
+            {/* Bordure décorative inférieure */}
+            <div className="h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent" />
+
+            {/* Coins décoratifs Belle Époque */}
+            <div className="absolute bottom-0 left-0 w-4 h-4 border-l-2 border-b-2 border-amber-500/50 rounded-bl-lg" />
+            <div className="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-amber-500/50 rounded-br-lg" />
+            <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-amber-500/50 rounded-tl-lg" />
+            <div className="absolute top-0 right-0 w-4 h-4 border-r-2 border-t-2 border-amber-500/50 rounded-tr-lg" />
           </div>
         </div>
       </div>
