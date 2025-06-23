@@ -589,26 +589,6 @@ export default function UserProfilePage() {
             <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-amber-500/50 rounded-tl-lg" />
             <div className="absolute top-0 right-0 w-4 h-4 border-r-2 border-t-2 border-amber-500/50 rounded-tr-lg" />
           </div>
-
-          {/* Back Button */}
-          <div className="text-center mt-8">
-            <button
-              onClick={() => router.push("/clairiere-obscure")}
-              className="relative overflow-hidden bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 hover:from-amber-600 hover:via-amber-500 hover:to-amber-600 text-white font-serif font-bold py-4 px-8 rounded-xl transition-all duration-500 transform hover:scale-[1.02] hover:shadow-2xl group text-sm sm:text-base border-2 border-amber-500/30"
-              style={{
-                boxShadow:
-                  "0 0 30px rgba(212, 175, 55, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.1)",
-                textShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-              <span className="relative tracking-widest uppercase">
-                Retour à l&apos;Accueil
-              </span>
-              {/* Permanent light effect */}
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-300/50 to-transparent" />
-            </button>
-          </div>
         </div>
       </div>
     </div>
