@@ -134,7 +134,17 @@ export default function AdminPage() {
             {expeditions.map((expedition) => (
               <div
                 key={expedition.id}
-                className="p-4 bg-gray-700 rounded-lg flex justify-between items-center"
+                className="p-4 bg-gray-700 rounded-lg flex justify-between items-center cursor-pointer hover:bg-gray-600 transition-colors"
+                onClick={() =>
+                  router.push(`/clairiere-obscure/join/${expedition.id}`)
+                }
+                tabIndex={0}
+                role="button"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    router.push(`/clairiere-obscure/join/${expedition.id}`);
+                  }
+                }}
               >
                 <div>
                   <h3 className="text-white font-medium">{expedition.name}</h3>
@@ -144,9 +154,10 @@ export default function AdminPage() {
                   </p>
                 </div>
                 <button
-                  onClick={() =>
-                    handleDeleteExpedition(expedition.id, expedition.name)
-                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteExpedition(expedition.id, expedition.name);
+                  }}
                   disabled={deletingId === expedition.id}
                   className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors disabled:bg-red-300 text-sm"
                 >

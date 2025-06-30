@@ -35,9 +35,12 @@ export default function JoinPage({
   // Rediriger vers la page de profil quand l'utilisateur a rejoint ou déjà rejoint
   useEffect(() => {
     if (success || alreadyJoined) {
-      const timer = setTimeout(() => {
-        router.push("/clairiere-obscure/profile");
-      }, success ? 2000 : autoJoined ? 1500 : 500); // Different timing based on action
+      const timer = setTimeout(
+        () => {
+          router.push("/clairiere-obscure/profile");
+        },
+        success ? 2000 : autoJoined ? 1500 : 500
+      ); // Different timing based on action
 
       return () => clearTimeout(timer);
     }
@@ -64,8 +67,10 @@ export default function JoinPage({
             try {
               // Format birthday as YYYY-MM-DD string for API
               const birthdayDate = new Date(userData.birthday);
-              const formattedBirthday = birthdayDate.toISOString().split('T')[0];
-              
+              const formattedBirthday = birthdayDate
+                .toISOString()
+                .split("T")[0];
+
               const joinResponse = await fetch(
                 `/clairiere-obscure/api/expeditions/${expeditionId}`,
                 {
@@ -73,9 +78,9 @@ export default function JoinPage({
                   headers: {
                     "Content-Type": "application/json",
                   },
-                  body: JSON.stringify({ 
-                    name: userData.name, 
-                    birthday: formattedBirthday 
+                  body: JSON.stringify({
+                    name: userData.name,
+                    birthday: formattedBirthday,
                   }),
                 }
               );
@@ -318,10 +323,9 @@ export default function JoinPage({
                         }}
                       />
                       <p className="text-amber-100 font-serif text-sm sm:text-base tracking-wide">
-                        {autoJoined 
-                          ? "Vous avez rejoint l'expédition ! Redirection..." 
-                          : "Redirection vers votre profil..."
-                        }
+                        {autoJoined
+                          ? "Vous avez rejoint l'expédition ! Redirection..."
+                          : "Redirection vers votre profil..."}
                       </p>
                       <div className="mt-3 w-24 h-px bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto" />
                     </div>
@@ -360,31 +364,33 @@ export default function JoinPage({
                         </div>
                       </div>
 
-                      <div>
-                        <label
-                          htmlFor="birthday"
-                          className="block text-sm sm:text-base font-serif font-medium text-amber-200 mb-3 tracking-widest uppercase"
-                          style={{
-                            textShadow: "0 0 10px rgba(212, 175, 55, 0.3)",
-                          }}
-                        >
-                          Date de Naissance
-                        </label>
-                        <div className="relative">
-                          <input
-                            type="date"
-                            id="birthday"
-                            value={birthday}
-                            onChange={(e) => setBirthday(e.target.value)}
-                            className="w-full px-4 py-3 sm:px-5 sm:py-4 bg-gray-800/60 border-2 border-amber-900/40 rounded-xl text-amber-50 font-serif focus:outline-none focus:border-amber-500/70 focus:bg-gray-800/80 transition-all duration-500 backdrop-blur-md text-sm sm:text-base"
+                      <div className="flex justify-center">
+                        <div className="w-1/3 min-w-[90px] max-w-[140px]">
+                          <label
+                            htmlFor="birthday"
+                            className="block text-sm sm:text-base font-serif font-medium text-amber-200 mb-3 tracking-widest uppercase text-center"
                             style={{
-                              boxShadow:
-                                "inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(212, 175, 55, 0.1)",
+                              textShadow: "0 0 10px rgba(212, 175, 55, 0.3)",
                             }}
-                            required
-                          />
-                          <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-amber-500/10 to-transparent pointer-events-none" />
-                          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-400/50 to-transparent" />
+                          >
+                            Date de Naissance
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="date"
+                              id="birthday"
+                              value={birthday}
+                              onChange={(e) => setBirthday(e.target.value)}
+                              className="w-full px-2 py-1 sm:px-2 sm:py-1 bg-gray-800/60 border-2 border-amber-900/40 rounded-xl text-amber-50 font-serif focus:outline-none focus:border-amber-500/70 focus:bg-gray-800/80 transition-all duration-500 backdrop-blur-md text-sm sm:text-base mx-auto"
+                              style={{
+                                boxShadow:
+                                  "inset 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(212, 175, 55, 0.1)",
+                              }}
+                              required
+                            />
+                            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-amber-500/10 to-transparent pointer-events-none" />
+                            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-400/50 to-transparent" />
+                          </div>
                         </div>
                       </div>
 
