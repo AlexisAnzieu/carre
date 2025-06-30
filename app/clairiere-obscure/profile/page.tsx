@@ -222,17 +222,6 @@ export default function UserProfilePage() {
                 Erreur: {error}
               </div>
             </div>
-            <button
-              onClick={() => router.push("/clairiere-obscure")}
-              className="bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 hover:from-amber-600 hover:via-amber-500 hover:to-amber-600 text-white font-serif font-bold py-3 px-6 rounded-xl transition-all duration-500 transform hover:scale-[1.02] hover:shadow-2xl text-sm sm:text-base border-2 border-amber-500/30"
-              style={{
-                boxShadow:
-                  "0 0 20px rgba(212, 175, 55, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.1)",
-                textShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-              }}
-            >
-              <span className="tracking-widest uppercase">Retour</span>
-            </button>
           </div>
         </div>
       </div>
