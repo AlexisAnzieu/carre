@@ -524,7 +524,7 @@ export default function UserProfilePage() {
                           boxShadow: "0 0 15px rgba(212, 175, 55, 0.4)",
                         }}
                       >
-                        {index + 1}
+                        {profile.expeditions.length - index}
                       </div>
 
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
