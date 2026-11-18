@@ -18,7 +18,7 @@
     "@vercel/analytics": "^1.5.0",
     "dotenv-cli": "^8.0.0",
     "framer-motion": "^11.18.2",
-    "next": "15.2.1",
+    "next": "^15.5.29",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "three": "^0.167.1"
@@ -31,7 +31,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.2.1",
+    "eslint-config-next": "^15.5.29",
     "prisma": "^6.4.1",
     "tailwindcss": "^4",
     "typescript": "^5"
